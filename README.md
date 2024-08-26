@@ -4,7 +4,7 @@
 This project is a case study completed in partial fulfillment of the requirements for the Career Foundry Data Analyst career program.
 The database was provided by CareerFoundry and includes fictionalized information about a rental company's stores, customers, and rental patterns.
 
-The project generates key insights about key business issues, including the types of films that generate the msot revenue and the locations of Rockbuster's highest-value customers.
+The project generates key insights about key business issues, including the types of films that generate the most revenue and the locations of Rockbuster's highest-value customers.
 
 ## View Visualizations on Tableau
 
