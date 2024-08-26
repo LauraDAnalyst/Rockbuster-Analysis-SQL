@@ -1,0 +1,55 @@
+Identifying the top 5 customers within Rockbuster's highest-earning cities:
+
+WITH top_5_customers AS
+(SELECT D. customer_id, 
+D. First_name, 
+D. Last_name, 
+A. country, 
+B. city,
+SUM (E. amount) AS total_paid 
+FROM country A 
+INNER JOIN city B on A. country_id = B. country_id 
+INNER JOIN address C on B. city_id = C. city_id 
+INNER JOIN customer D on C. address_id = D. address_id 
+INNER JOIN payment E on D. customer_id = E. customer_id  
+WHERE B. city IN ( 
+    SELECT 
+    B. city 
+    FROM country A 
+    INNER JOIN city B on A. country_id = B. country_id 
+    INNER JOIN address C on C. city_id = B. city_id 
+    INNER JOIN customer D on D. address_id = C. address_id 
+    WHERE A. country IN( 
+      SELECT country 
+      FROM country A 
+      INNER JOIN city B on A. country_id = B. country_id 
+      INNER JOIN address C on C. city_id = B. city_id 
+      INNER JOIN customer D on D. address_id = C. address_id 
+      GROUP BY country 
+      ORDER BY COUNT (D.customer_id) DESC 
+      LIMIT 10 
+       ) 
+    GROUP BY A. country, 
+    B. city 
+    ORDER BY COUNT (D. customer_id) DESC 
+    LIMIT 10 
+    ) 
+GROUP BY D. customer_id, 
+D. First_name, 
+D. Last_name, 
+A. country, 
+B. city 
+ORDER BY SUM (E. amount) DESC 
+LIMIT 5) 
+SELECT 
+A. Country, 
+COUNT (DISTINCT D. customer_id) AS all_customer_count, 
+COUNT (DISTINCT top_5_customers)AS top_customer_count 
+FROM country A 
+INNER JOIN city B on A. country_id = B. country_id 
+INNER JOIN address C on B. city_id = C. city_id 
+INNER JOIN customer D on C. address_id = D. address_id 
+LEFT JOIN top_5_customers on A. country = top_5_customers. country 
+GROUP BY A. country 
+ORDER BY top_customer_count DESC 
+LIMIT 5
